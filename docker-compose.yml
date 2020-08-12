@@ -15,7 +15,10 @@ services:
   influxdb:
     image: influxdb:1.8-alpine
     restart: unless-stopped
-    env_file: configuration.env
+    environment:
+      INFLUXDB_DB: influx
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: password
     ports:
       - '8086:8086'
     volumes:
@@ -27,7 +30,14 @@ services:
     restart: unless-stopped
     depends_on:
       - influxdb
-    env_file: configuration.env
+    environment:
+        - GF_SECURITY_ADMIN_PASSWORD=password
+        - GF_SECURITY_ADMIN_USER=admin
+        - GF_AUTH_ANONYMOUS_ENABLED=false
+        - GF_USERS_ALLOW_SIGN_UP=false
+        - GF_USERS_ALLOW_ORG_CREATE=true
+        - GF_SMTP_ENABLED=true
+        - GF_SMTP_HOST=smtp.yourlan.local
     links:
       - influxdb
     ports:
